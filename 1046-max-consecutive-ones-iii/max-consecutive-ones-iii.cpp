@@ -7,13 +7,13 @@ public:
         while(j<n){
             if(nums[j]==0) cntZeroes++;
             if(cntZeroes>k){
-                while(cntZeroes>k){
-                    if(nums[i]==0) cntZeroes--;
-                    i++;
-                }
+                if(nums[i]==0) cntZeroes--;
+                i++;
             }
-            len = j-i+1;
-            maxLen = max(maxLen,len);
+            else {
+                len = j-i+1;
+                maxLen = max(len,maxLen);
+            }
             j++;
         }
         return maxLen;
