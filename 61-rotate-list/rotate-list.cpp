@@ -10,29 +10,30 @@
  */
 class Solution {
 public:
-    ListNode* findNthNode(ListNode* head, int n){
+    ListNode* getNthNode(ListNode* head,int n){
+        ListNode* temp = head;
         int cnt = 1;
-        ListNode *temp = head;
         while(cnt!=n){
+            temp=temp->next;
             cnt++;
-            temp = temp->next;
         }
         return temp;
     }
     ListNode* rotateRight(ListNode* head, int k) {
-        int len = 1;
-        ListNode* tail = head;
         if(!head || !head->next) return head;
-        while(tail->next){
+
+        int len = 1;
+        ListNode* temp = head;
+        while(temp->next){
+            temp = temp->next;
             len++;
-            tail = tail->next;
         }
-        if(k%len==0) return head;
         k = k%len;
-        tail->next = head;
-        ListNode* newLastNode = findNthNode(head,len-k);
-        head = newLastNode->next;
-        newLastNode->next = NULL;
-        return head;
+        if(k==0)  return head;
+        temp->next = head;
+        ListNode* newEndNode = getNthNode(head,len-k);
+        ListNode* newStart = newEndNode->next;
+        newEndNode->next = NULL;
+        return newStart;
     }
 };
