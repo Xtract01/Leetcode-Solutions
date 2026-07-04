@@ -1,14 +1,6 @@
 class Solution {
 public:
-    void dfs(int node , int &result,unordered_map<int,vector<pair<int,int>>> &adj,vector<bool> & vis){
-        vis[node] = true;
-        for(auto ngbr:adj[node]){
-            int nbr = ngbr.first;
-            int dist = ngbr.second;
-            result = min(result,dist);
-            if(!vis[nbr]) dfs(nbr,result,adj,vis);
-        }
-    }
+    
     int minScore(int n, vector<vector<int>>& roads) {
         unordered_map<int,vector<pair<int,int>>> adj;
         for(vector<int> &vec:roads){
@@ -18,9 +10,24 @@ public:
             adj[u].push_back({v,d});
             adj[v].push_back({u,d});
         }
-        vector<bool> vis(n,false);
+        vector<bool> vis(n+1,false);
         int result = INT_MAX;
-        dfs(1,result,adj,vis);
+        queue<int> q;
+        vis[1] = true;
+        q.push(1);
+        while(!q.empty()){
+            int node= q.front();
+            q.pop();
+            for(auto ngbr:adj[node]){
+                int nbr = ngbr.first;
+                int dist = ngbr.second;
+                result = min(dist,result);
+                if(!vis[nbr]){
+                    vis[nbr] = true;
+                    q.push(nbr);
+                }
+            }
+        }
         return result;
     }
 };
