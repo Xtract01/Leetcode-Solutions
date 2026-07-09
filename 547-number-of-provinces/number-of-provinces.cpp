@@ -1,32 +1,48 @@
-class Solution {
+class DSU{
 public:
-    void dfs(int node , vector<bool> &vis ,unordered_map<int,vector<int>> &adj ){
-        vis[node] = true;
-        for(int ngbr:adj[node]){
-            if(!vis[ngbr]){
-                dfs(ngbr,vis,adj);
-            }
+    vector<int> rank,parent;
+    DSU(int n){
+        rank.resize(n,0);
+        parent.resize(n);
+        for(int i=0 ; i<n ; i++){
+            parent[i] = i;
         }
     }
+    int findUPar(int node){
+        if(parent[node]==node) return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+    void unionByRank(int u, int v){
+        int ult_u = findUPar(u);
+        int ult_v = findUPar(v);
+        if(ult_u==ult_v) return;
+        if(rank[ult_u]<rank[ult_v]){
+            parent[ult_u] = ult_v;
+        }
+        else if(rank[ult_v]<rank[ult_u]) parent[ult_v] = ult_u;
+        else {
+            parent[ult_v] = ult_u;
+            rank[ult_u]++;
+        }
+    }
+};
+
+class Solution {
+public:
     int findCircleNum(vector<vector<int>>& isConnected) {
-        unordered_map<int,vector<int>> adj;
         int n = isConnected.size();
         int m = isConnected[0].size();
+        DSU ds(n);
         for(int i=0 ; i<n ; i++){
             for(int j = 0; j<n ; j++){
                 if(isConnected[i][j]==1){
-                    adj[i].push_back(j);
-                    adj[j].push_back(i);
+                   ds.unionByRank(i,j);
                 }
             }
         }
-        vector<bool> vis(n,false);
         int res = 0;
         for(int i=0 ; i<n ; i++){
-            if(!vis[i]){
-                res++;
-                dfs(i,vis,adj);
-            }
+            if(ds.parent[i]==i) res++;
         }
         return res;
     }
