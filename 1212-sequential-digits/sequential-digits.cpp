@@ -8,7 +8,7 @@ public:
             int el = q.front(); 
             q.pop();
             if(el>=low && el<=high) res.push_back(el);
-            if(el>high) continue;
+            if(el>high) break;
             int l = el%10;
             if(l!=9) q.push(el*10+(l+1));
         }
