@@ -1,32 +1,31 @@
 class Solution {
 public:
+    typedef pair<int,pair<int,int>> P;
     int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        vector<vector<int>> dir = {{1,0},{0,1},{-1,0},{0,-1},{1,1},{-1,1},{-1,-1},{1,-1}};
         int n = grid.size();
-        if (grid[0][0] == 1 || grid[n-1][n-1] == 1) return -1;
-        if(n==1) return 1;
-        pair<int,int> src = {0,0};
-        pair<int,int> dest = {n-1,n-1};
-        queue<pair<int,pair<int,int>>> q;
-        vector<vector<int>> dist(n,vector<int>(n,INT_MAX));
-        vector<vector<int>> dir = {{1,0},{-1,0},{0,1},{0,-1},{-1,-1},{-1,1},{1,-1},{1,1}};
-        dist[src.first][src.second] = 1;
-        q.push({1,{src.first,src.second}});
-        while(!q.empty()){
-            auto it = q.front();
-            q.pop();
-            int dis = it.first;
-            int r = it.second.first;
-            int c = it.second.second;
-            for(vector<int>& vec : dir){
-                int new_r = r + vec[0];
-                int new_c = c + vec[1];
-                if(new_r>=0 && new_r<n && new_c>=0 && new_c<n && grid[new_r][new_c]==0 && dis + 1 < dist[new_r][new_c]){
-                    dist[new_r][new_c] = 1+dis;
-                    if(new_r==dest.first && new_c==dest.second) return dis+1;
-                    q.push({dis+1,{new_r,new_c}});
+        int m = grid[0].size();
+        if(grid[0][0]==1 || grid[n-1][m-1]==1) return -1;
+        vector<vector<int>>dist (n,vector<int>(m,INT_MAX));
+        priority_queue<P,vector<P>,greater<P>> pq;
+        dist[0][0] = 1;
+        pq.push({1,{0,0}});
+        while(!pq.empty()){
+            int row = pq.top().second.first;
+            int col = pq.top().second.second;
+            int d = pq.top().first;
+            pq.pop();
+            for(vector<int> &dr : dir){
+                int new_r = row + dr[0];
+                int new_c = col + dr[1];
+                if(new_r<0 || new_r>=n || new_c<0 || new_c>=m || grid[new_r][new_c]==1) continue;
+                if(dist[new_r][new_c] > d+1){
+                    dist[new_r][new_c] = d+1;
+                    pq.push({d+1,{new_r,new_c}});
                 }
             }
         }
-        return -1;
+        return dist[n-1][m-1]==INT_MAX?-1:dist[n-1][m-1];
+
     }
 };
