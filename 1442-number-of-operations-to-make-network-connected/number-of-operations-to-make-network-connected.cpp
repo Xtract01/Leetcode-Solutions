@@ -1,45 +1,42 @@
-class DisjointSet {
-    vector<int> rank,parent;
-  public:
-    DisjointSet(int n){
-        rank.resize(n+1,0);
-        parent.resize(n+1,0);
-        for(int i=0 ; i<=n ; i++){
-            parent[i] = i;
-        }
+class DSU{
+public:
+    vector<int> rank, parent;
+    DSU(int n){
+        rank.resize(n,0);
+        parent.resize(n);
+        for(int i=0 ; i<n ; i++) parent[i] = i;
     }
-    int findParent(int node){
-        if(node==parent[node]) return node;
-        return parent[node] = findParent(parent[node]);
+    int findUpar(int u){
+        if(parent[u]==u) return u;
+        return parent[u] = findUpar(parent[u]);
     }
-    void unionByRank(int u , int v){
-        int ulp_u = findParent(u);
-        int ulp_v = findParent(v);
-        if(rank[ulp_u] < rank[ulp_v]){
-            parent[ulp_u] = ulp_v;
+    void unionByRank(int u, int v){
+        int pu = findUpar(u);
+        int pv = findUpar(v);
+        if(pv==pu) return;
+        else if(rank[pv]<rank[pu]){
+            parent[pv]=pu;
         }
-        else if(rank[ulp_v] < rank[ulp_u]){
-            parent[ulp_v] = ulp_u;
-        }
+        else if(rank[pv]>rank[pu]) parent[pu]=pv;
         else {
-            parent[ulp_v] = ulp_u;
-            rank[ulp_u]++;
+            parent[pu] = pv;
+            rank[pv]++;
         }
     }
-
 };
 class Solution {
 public:
     int makeConnected(int n, vector<vector<int>>& connections) {
-        if(connections.size()<n-1) return -1;
-        DisjointSet dis(n);
-        for(vector<int> &v: connections){
-            dis.unionByRank(v[0],v[1]);
+        DSU dsu(n);
+        for(vector<int> &v:connections){
+            dsu.unionByRank(v[0],v[1]);
         }
-        unordered_set<int> st;
-        for(int i = 0 ;i<n ; i++){
-            st.insert(dis.findParent(i));
+        if (connections.size() < n - 1) return -1;
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (dsu.findUpar(i) == i)
+                ans++;
         }
-        return st.size()-1;
+        return ans-1;
     }
 };
