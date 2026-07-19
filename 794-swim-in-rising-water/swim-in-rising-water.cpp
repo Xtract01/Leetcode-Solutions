@@ -1,32 +1,46 @@
 class Solution {
 public:
-    vector<vector<int>> directions {{1,0},{-1,0},{0,1},{0,-1}};
-    int n;
-    bool isPossible(vector<vector<int>> &grid,int i , int j , int t , vector<vector<bool>> &visited){
-        if(i<0 || i>=n || j<0 || j>=n || visited[i][j] == true || grid[i][j] > t) return false;
-        visited[i][j] = true;
-        if(i==n-1 && j==n-1) return true;
-        for(auto &dir : directions){
-            int i_ = i+dir[0];
-            int j_ = j+dir[1];
-            if(isPossible(grid,i_,j_,t,visited)) return true;
-        }
-        return false;
-    }
     int swimInWater(vector<vector<int>>& grid) {
-        n = grid.size();
-        int l = grid[0][0]; 
-        int r = n*n - 1;
-        int result = 0;
-        while(l <= r){
-            int mid = l +(r-l)/2;
-            vector<vector<bool>> visited(n,vector<bool>(n,false));
-            if(isPossible(grid,0,0,mid,visited)){
-                result = mid ;
-                r = mid-1;
+
+        int n = grid.size();
+
+        priority_queue<
+            vector<int>,
+            vector<vector<int>>,
+            greater<vector<int>>
+        > pq;
+
+        vector<vector<int>> vis(n, vector<int>(n, 0));
+
+        vector<vector<int>> dir = {{1,0},{-1,0},{0,1},{0,-1}};
+
+        pq.push({grid[0][0], 0, 0});
+
+        while (!pq.empty()) {
+
+            auto cur = pq.top();
+            pq.pop();
+
+            int time = cur[0];
+            int row = cur[1];
+            int col = cur[2];
+
+            if (vis[row][col]) continue;
+            vis[row][col] = 1;
+
+            if (row == n-1 && col == n-1)
+                return time;
+
+            for (auto &d : dir) {
+                int nr = row + d[0];
+                int nc = col + d[1];
+
+                if (nr >= 0 && nr < n && nc >= 0 && nc < n && !vis[nr][nc]) {
+                    pq.push({max(time, grid[nr][nc]), nr, nc});
+                }
             }
-            else l =mid+1;
         }
-        return result;
+
+        return -1;
     }
 };
