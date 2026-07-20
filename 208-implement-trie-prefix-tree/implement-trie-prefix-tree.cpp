@@ -2,29 +2,24 @@ class Trie {
 public:
     struct trieNode{
         bool isEndOfWord;
-        trieNode* children[26];
+        trieNode* children[26]; 
     };
     trieNode* getNode(){
         trieNode* newNode = new trieNode();
         newNode->isEndOfWord = false;
-        for(int i =0 ; i<26 ; i++){
-            newNode->children[i] = NULL;
-        }
+        for(int i=0 ; i<26 ; i++) newNode-> children[i]=NULL;
         return newNode;
-    }
-
-    trieNode* root;
+    };
+    trieNode *root;
     Trie() {
         root = getNode();
     }
     
     void insert(string word) {
         trieNode* crawler = root;
-        int i =0;
-        for(; i< word.length(); i++){
-            char ch = word[i];
-            int idx = ch-'a';
-
+        for(int i=0 ; i<word.length();i++){
+            char ch=word[i];
+            int idx = ch -'a';
             if(crawler->children[idx]==NULL){
                 crawler->children[idx] = getNode();
             }
@@ -35,31 +30,27 @@ public:
     
     bool search(string word) {
         trieNode* crawler = root;
-        for(int i=0 ; i< word.length(); i++){
-            char ch = word[i];
-            int idx = ch-'a';
-
-            if(crawler->children[idx]==NULL){
-                return false ;
-            }
+        for(int i=0 ; i<word.length();i++){
+            char ch=word[i];
+            int idx = ch -'a';
+            if(crawler->children[idx]==NULL) return false;
             crawler = crawler->children[idx];
         }
-        return (crawler!=NULL && crawler->isEndOfWord == true);
+        if(crawler!=NULL && crawler->isEndOfWord) return true;
+        return false;
     }
     
     bool startsWith(string prefix) {
         trieNode* crawler = root;
-        int i=0;
-        for(; i< prefix.length(); i++){
-            char ch = prefix[i];
-            int idx = ch-'a';
-
-            if(crawler->children[idx]==NULL){
-                return false ;
-            }
+        int i;
+        for( i=0 ; i<prefix.length();i++){
+            char ch=prefix[i];
+            int idx = ch -'a';
+            if(crawler->children[idx]==NULL) return false;
             crawler = crawler->children[idx];
         }
-        return (i==prefix.length());
+        if(i==prefix.length()) return true;
+        return false;
     }
 };
 
