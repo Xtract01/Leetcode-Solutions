@@ -10,45 +10,44 @@
  */
 class Solution {
 public:
-    ListNode* merge2(ListNode* h1 , ListNode* h2){
-        ListNode* dummy = new ListNode(-1);
-        ListNode* temp = dummy;
-        ListNode* temp1 = h1;
-        ListNode* temp2 = h2;
-        while(temp1 && temp2){
-            if(temp1->val<temp2->val){
-                temp->next = temp1;
-                temp1 = temp1->next;
-            }
-            else {
-                temp->next = temp2;
-                temp2=temp2->next;
-            }
-            temp = temp->next;
-        }
-        if(temp1){
-            temp->next = temp1;
-        }
-        if(temp2) temp->next = temp2;
-        return dummy->next;
-    }
     ListNode* findMiddle(ListNode* head){
+        ListNode* fast = head->next;
         ListNode* slow = head;
-        ListNode * fast = head->next;
-        while(fast && fast->next){
+        while(fast->next && fast->next->next){
             slow = slow->next;
             fast = fast->next->next;
         }
         return slow;
     }
+    ListNode* mergeTwo(ListNode* lst1 , ListNode* lst2){
+        ListNode *temp1 = lst1;
+        ListNode* temp2 = lst2;
+        ListNode* dummy = new ListNode(0);
+        ListNode* tempD = dummy;
+        while(temp1 && temp2){
+            if(temp1->val < temp2->val){
+                tempD ->next = temp1;
+                temp1 = temp1->next;
+            }
+            else {
+                tempD->next = temp2;
+                temp2 = temp2->next;
+            }
+            tempD = tempD->next;
+        }
+        if(temp1) tempD->next = temp1;
+        if(temp2) tempD->next = temp2;
+        return dummy->next;
+    }
     ListNode* sortList(ListNode* head) {
         if(!head || !head->next) return head;
-        ListNode* middle = findMiddle(head); 
-        ListNode * leftHead = head ;
-        ListNode* rightHead = middle->next;
+        ListNode* middle = findMiddle(head);
+        ListNode* right = middle->next;
+        ListNode* left = head;
         middle->next = NULL;
-        leftHead = sortList(leftHead);
-        rightHead = sortList(rightHead);
-        return merge2(leftHead,rightHead);
+
+        left = sortList(left);
+        right = sortList(right);
+        return mergeTwo(right,left);
     }
 };
