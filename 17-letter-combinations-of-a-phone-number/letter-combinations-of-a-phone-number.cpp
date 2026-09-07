@@ -1,24 +1,30 @@
 class Solution {
 public:
-    void solve(int idx , string &digits , vector<string>&ans,vector<string>str , string temp){
-        if(idx>= digits.length()){
-            ans.push_back(temp);
-            return ;
+    void solve(int idx, string temp ,string digits,unordered_map<int,string> &mp,vector<string> &res){
+        if(idx==digits.size()){
+            res.push_back(temp);
+            return;
         }
-        char ch = digits[idx];
-        int i = ch - '0';
-        string st = str[i-2];
-        for(int i=0 ; i<st.length() ;i++){
-            temp.push_back(st[i]);
-            solve(idx+1,digits,ans,str,temp);
+        for(char c:mp[digits[idx]-'0']){
+            temp.push_back(c);
+            solve(idx+1,temp,digits,mp,res);
             temp.pop_back();
         }
     }
     vector<string> letterCombinations(string digits) {
-        vector<string> str = {"abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
-        vector<string> ans;
-        string temp;
-        solve(0,digits,ans,str,temp);
-        return ans;
+        unordered_map<int,string> mp;
+        mp[2] = "abc";
+        mp[3] = "def";
+        mp[4] = "ghi";
+        mp[5] = "jkl";
+        mp[6] = "mno";
+        mp[7] = "pqrs";
+        mp[8] = "tuv";
+        mp[9] = "wxyz";
+
+        vector<string>res;
+        string temp ="";
+        solve(0,temp,digits,mp,res);
+        return res;
     }
 };
